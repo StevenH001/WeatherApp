@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">WeatherApp</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_map">Map Location</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!--Settings for Cat City name -->
+
+    <string name="pref_loc_label">Location</string>
+    <string name="pref_loc_key" translatable="false">location</string>
+    <string name="pref_loc_default" translatable="false">33801</string>
+
+    <string name="pref_units_label">Temperature Units</string>
+    <string name="pref_units_label_metric">Metric</string>
+    <string name="pref_units_label_imperial">Imperial</string>
+    <string name="pref_units_default">Metric</string>
+    <string name="pref_units_key" translatable="false">units</string>
+    <string name="pref_units_metric" translatable="false">metric</string>
+    <string name="pref_units_imperial" translatable="false">imperial</string>
+
+</resources>
