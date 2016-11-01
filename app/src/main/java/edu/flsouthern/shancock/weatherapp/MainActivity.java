@@ -32,6 +32,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import edu.flsouthern.shancock.weatherapp.Data.WeatherDbHelper;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -162,8 +164,15 @@ public class MainActivity extends AppCompatActivity {
          * Fortunately parsing is easy:  constructor takes the JSON string and converts it
          * into an Object hierarchy for us.
          */
-        private String[] getWeatherDataFromJson(String forecastJsonStr, int numDays)
+        private void getWeatherDataFromJson(String forecastJsonStr, int numDays)
                 throws JSONException {
+
+            // Get a database to use to store cats
+            WeatherDbHelper catDbHelper = new WeatherDbHelper(MainActivity.this);
+
+            // Empty old data
+            catDbHelper.deleteAllWeather();
+
 
             // These are the names of the JSON objects that need to be extracted.
             final String OWM_LIST = "list";
@@ -172,6 +181,12 @@ public class MainActivity extends AppCompatActivity {
             final String OWM_MAX = "max";
             final String OWM_MIN = "min";
             final String OWM_DESCRIPTION = "main";
+            final String OWM_DATE = "date";
+            final String OWM_SHORT_DESC = "shortDesc";
+            final String OWM_HUMIDITY = "humidity";
+            final String OWM_PRESSURE = "pressure";
+            final String OWM_WIND_SPEED = "windSpeed";
+            final String OWM_DEGREES = "degrees";
 
             JSONObject forecastJson = new JSONObject(forecastJsonStr); // TODO: Get JSON from raw data
             JSONArray weatherArray = forecastJson.getJSONArray(OWM_LIST); // TODO: Get weather array from JSON
@@ -318,7 +333,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             try {
-                return getWeatherDataFromJson(forecastJsonStr, numDays);
+                getWeatherDataFromJson(forecastJsonStr, numDays);
             } catch (JSONException e) {
                 Log.e(LOG_TAG, e.getMessage(), e);
                 e.printStackTrace();
