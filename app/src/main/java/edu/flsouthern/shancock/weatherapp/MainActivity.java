@@ -2,6 +2,7 @@ package edu.flsouthern.shancock.weatherapp;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
@@ -32,13 +33,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import edu.flsouthern.shancock.weatherapp.Data.WeatherContract;
 import edu.flsouthern.shancock.weatherapp.Data.WeatherDbHelper;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    //Declare an adapter for loading our listview
-    ArrayAdapter<String> mWeatherAdapter;
+    WeatherAdapter mWeatherAdapter;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -49,8 +50,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        //noinspection SimplifiableIfStatement
         if(id == R.id.action_settings) {
             startActivity(new Intent(MainActivity.this, SettingsActivity.class));
             return true;
@@ -70,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
         Uri Location = Uri.parse("geo:0,0?q=" + location);
 
+        //Make Intent
         Intent intent = new Intent(Intent.ACTION_VIEW, Location);
 
         startActivity(intent);
@@ -81,34 +87,63 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Get DB Helper
+        WeatherDbHelper weatherDbHelper = new WeatherDbHelper(this);
+        Cursor cursor = weatherDbHelper.getAllWeather();
 
-        // Create some dummy data for the ListView.
-        String[] data = {
-                "Mon 6/23 - Sunny - 31/17",
-                "Tue 6/24 - Foggy - 21/8",
-                "Wed 6/25 - Cloudy - 22/17",
-                "Thurs 6/26 - Rainy - 18/11",
-                "Fri 6/27 - Foggy - 21/10",
-                "Sat 6/28 - TRAPPED IN WEATHERSTATION - 23/18",
-                "Sun 6/29 - Sunny - 20/7",
-        };
-
-        //Creat a new array to hold the weather data
-        List<String> weatherList = new ArrayList<String>(Arrays.asList(data));
+        //Make an adapter for our data
+        mWeatherAdapter = new WeatherAdapter(this, cursor, 0);
 
         // Set up an ArrayAdapter that will take data from a source and use it to populate the ListView it's attached to.
-        mWeatherAdapter =  new ArrayAdapter<String>(this, R.layout.list_item_forecast, R.id.list_item_forecast_textview, weatherList);
         ListView listView = (ListView) findViewById(R.id.listview_forecast);
         listView.setAdapter(mWeatherAdapter);
-
-        // Add to onCreate method
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                String forecast = mWeatherAdapter.getItem(position);
-                Intent intent = new Intent(MainActivity.this, DetailActivity.class).putExtra(Intent.EXTRA_TEXT, forecast);
-                startActivity(intent);
+                Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
+                if (cursor != null) {
+
+                    // Find the column numbers in the cursor
+                    int idx_loc_key = cursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_LOC_KEY);
+                    int idx_date = cursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_DATE);
+                    int idx_short_desc = cursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_SHORT_DESC);
+                    int idx_max_temp = cursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_MAX_TEMP);
+                    int idx_min_temp = cursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_MIN_TEMP);
+                    int idx_humidity = cursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_HUMIDITY);
+                    int idx_pressure = cursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_PRESSURE);
+                    int idx_wind_speed = cursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_WIND_SPEED);
+                    int idx_degrees = cursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_DEGREES);
+
+
+                    // Get data to pass to detail activity
+                    String location = cursor.getString(idx_loc_key);
+                    String date = cursor.getString(idx_date);
+                    String shortDesc = cursor.getString(idx_short_desc);
+                    String max = cursor.getString(idx_max_temp);
+                    String min = cursor.getString(idx_min_temp);
+                    String humidity = cursor.getString(idx_humidity);
+                    String pressure = cursor.getString(idx_pressure);
+                    String windSpeed = cursor.getString(idx_wind_speed);
+                    String degrees = cursor.getString(idx_degrees);
+
+
+                    Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+
+                    // Load data to pass
+                    intent.putExtra("WEATHER_LOC_KEY", location);
+                    intent.putExtra("WEATHER_SHORT_DESC", shortDesc);
+                    intent.putExtra("WEATHER_DATE", date);
+                    intent.putExtra("WEATHER_MAX_TEMP", max);
+                    intent.putExtra("WEATHER_MIN_TEMP", min);
+                    intent.putExtra("WEATHER_HUMIDITY", humidity);
+                    intent.putExtra("WEATHER_PRESSURE", pressure);
+                    intent.putExtra("WEATHER_WIND_SPEED", windSpeed);
+                    intent.putExtra("WEATHER_DEGREES", degrees);
+
+                    // Run activity
+                    startActivity(intent);
+                }
             }
         });
     }
@@ -168,28 +203,36 @@ public class MainActivity extends AppCompatActivity {
                 throws JSONException {
 
             // Get a database to use to store cats
-            WeatherDbHelper catDbHelper = new WeatherDbHelper(MainActivity.this);
+            WeatherDbHelper weatherDbHelper = new WeatherDbHelper(MainActivity.this);
 
             // Empty old data
-            catDbHelper.deleteAllWeather();
+            weatherDbHelper.deleteAllWeather();
 
 
             // These are the names of the JSON objects that need to be extracted.
             final String OWM_LIST = "list";
+            final String OWM_LOCATION = "city";
+            final String OWM_ID_KEY = "id";
             final String OWM_WEATHER = "weather";
             final String OWM_TEMPERATURE = "temp";
             final String OWM_MAX = "max";
             final String OWM_MIN = "min";
-            final String OWM_DESCRIPTION = "main";
-            final String OWM_DATE = "date";
-            final String OWM_SHORT_DESC = "shortDesc";
+            //Additional future items
+            //final String OWM_DESCRIPTION = "description";
+            //final String OWM_ICON = "icon";
+            final String OWM_SHORT_DESC = "main";
             final String OWM_HUMIDITY = "humidity";
             final String OWM_PRESSURE = "pressure";
-            final String OWM_WIND_SPEED = "windSpeed";
-            final String OWM_DEGREES = "degrees";
+            final String OWM_WIND_SPEED = "speed";
+            final String OWM_DEGREES = "deg";
 
-            JSONObject forecastJson = new JSONObject(forecastJsonStr); // TODO: Get JSON from raw data
-            JSONArray weatherArray = forecastJson.getJSONArray(OWM_LIST); // TODO: Get weather array from JSON
+            JSONObject forecastJson = new JSONObject(forecastJsonStr);
+            JSONArray weatherArray = forecastJson.getJSONArray(OWM_LIST);
+
+
+            JSONObject locationObject = forecastJson.getJSONObject(OWM_LOCATION);
+            String location = locationObject.getString(OWM_ID_KEY);
+
 
             // OWM returns daily forecasts based upon the local time of the city that is being
             // asked for, which means that we need to know the GMT offset to translate this data
@@ -208,42 +251,63 @@ public class MainActivity extends AppCompatActivity {
             // now we work exclusively in UTC
             dayTime = new Time();
 
-            String[] resultStrs = new String[numDays];
+
+
+
             for (int i = 0; i < weatherArray.length(); i++) {
-                // For now, using the format "Day, description, hi/low"
-                String day;
-                String description;
-                String highAndLow;
+                int id;
+                String shortDesc;
+                String date;
+                String max;
+                String min;
+                String humidity;
+                String pressure;
+                String wind_speed;
+                String degrees;
 
                 // Get the JSON object representing the day
-                JSONObject dayForecast = weatherArray.getJSONObject(i); //TODO: Get JSON for current day
+                JSONObject dayForecast = weatherArray.getJSONObject(i);
 
-                // The date/time is returned as a long.  We need to convert that
-                // into something human-readable, since most people won't read "1400356800" as
-                // "this saturday".
+                // Convert date from long into readable form
                 long dateTime;
-                // Cheating to convert this to UTC time, which is what we want anyhow
+                // Convert this to UTC time
                 dateTime = dayTime.setJulianDay(julianStartDay + i);
-                day = getReadableDateString(dateTime);
+                date = getReadableDateString(dateTime);
+
+                // Temperatures are in a child object called "temp".
+                JSONObject temperatureObject = dayForecast.getJSONObject(OWM_TEMPERATURE);
+                max = temperatureObject.getString(OWM_MAX);
+                min = temperatureObject.getString(OWM_MIN);
 
                 // description is in a child array called "weather", which is 1 element long.
-                JSONArray weatherObject = dayForecast.getJSONArray(OWM_WEATHER); //TODO: Get the child weather object
-                description = weatherObject.getJSONObject(0).getString(OWM_DESCRIPTION); //TODO: Extract the description
+                JSONArray weatherObject = dayForecast.getJSONArray(OWM_WEATHER);
+                shortDesc = weatherObject.getJSONObject(0).getString(OWM_SHORT_DESC);
 
-                // Temperatures are in a child object called "temp".  Try not to name variables
-                // "temp" when working with temperature.  It confuses everybody.
-                JSONObject temperatureObject = dayForecast.getJSONObject(OWM_TEMPERATURE); // TODO: Get temp object
-                double high = temperatureObject.getDouble(OWM_MAX); //TODO: Get the max temp
-                double low = temperatureObject.getDouble(OWM_MIN); //TODO: Get the min temp
+                JSONArray idObject = dayForecast.getJSONArray(OWM_WEATHER);
+                id = weatherObject.getJSONObject(0).getInt(OWM_ID_KEY);
 
-                highAndLow = formatHighLows(high, low);
-                resultStrs[i] = day + " - " + description + " - " + highAndLow;
+                //Get Pressure object in list array
+                //JSONObject pressureObject = dayForecast.getJSONObject(OWM_PRESSURE);
+                pressure = dayForecast.getString(OWM_PRESSURE);
+
+                //Get humidity object in list array
+                //JSONObject humidityObject = dayForecast.getJSONObject(OWM_HUMIDITY);
+                humidity = dayForecast.getString(OWM_HUMIDITY);
+
+                //Get degrees object in list array
+                //JSONObject degreeObject = dayForecast.getJSONObject(OWM_DEGREES);
+                degrees = dayForecast.getString(OWM_DEGREES);
+
+                //Get the wind speed object in list array
+                //JSONObject windSpeedObject = dayForecast.getJSONObject(OWM_WIND_SPEED);
+                wind_speed = dayForecast.getString(OWM_WIND_SPEED);
+
+
+                //highAndLow = formatHighLows(high, low);
+
+                weatherDbHelper.addWeatherEntry(id, location, shortDesc, date, max, min, humidity, pressure, wind_speed, degrees);
             }
 
-            for (String s : resultStrs) {
-                Log.v(LOG_TAG, "Forecast entry: " + s);
-            }
-            return resultStrs;
 
         }
 
@@ -343,18 +407,17 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
 
-        @Override
+/*        @Override
         protected void onPostExecute(String[] result) {
             if (result != null) {
                 mWeatherAdapter.clear();
                 for(String dayForecastStr : result) {
                     mWeatherAdapter.add(dayForecastStr);
                 }
-                //TODO: Clear the adapter and load the day into it
 
                 // New data is back from the server.  Hooray!
             }
-        }
+        }*/
     }
 
 }
