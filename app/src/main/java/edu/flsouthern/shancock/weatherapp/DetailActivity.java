@@ -27,18 +27,21 @@ public class DetailActivity extends AppCompatActivity {
             String pressure = intent.getStringExtra("WEATHER_PRESSURE");
             String windSpeed = intent.getStringExtra("WEATHER_WIND_SPEED");
             String degrees = intent.getStringExtra("WEATHER_DEGREES");
+            String icon = intent.getStringExtra("WEATHER_ID");
 
             //Load data into view
             //For now, format data based on orientation in here. Edit later to create cleaner stlye.
             ((TextView) findViewById(R.id.detail_date_textview)).setText(date);
-            ((TextView) findViewById(R.id.detail_loc_textview)).setText("Location ID:       " + location);
-            ((TextView) findViewById(R.id.detail_shortDesc_textview)).setText("Cloudiness:        " + shortDesc);
-            ((TextView) findViewById(R.id.detail_max_textview)).setText("Max Temp:         " + max);
-            ((TextView) findViewById(R.id.detail_min_textview)).setText("Min Temp:          " + min);
-            ((TextView) findViewById(R.id.detail_humidity_textview)).setText("Humidity:            " + humidity + " %");
-            ((TextView) findViewById(R.id.detail_pressure_textview)).setText("Pressure:            " + pressure + " hpa");
-            ((TextView) findViewById(R.id.detail_windSpeed_textview)).setText("Wind Speed:       " + windSpeed + " m/s");
-            ((TextView) findViewById(R.id.detail_degrees_textview)).setText("Direction:            " + degrees + " Degrees");
+            ((TextView) findViewById(R.id.detail_loc_textview)).setText(location);
+            ((TextView) findViewById(R.id.detail_shortDesc_textview)).setText(shortDesc);
+            ((TextView) findViewById(R.id.detail_max_textview)).setText(max);
+            ((TextView) findViewById(R.id.detail_min_textview)).setText(min);
+            ((TextView) findViewById(R.id.detail_humidity_textview)).setText(humidity);
+            ((TextView) findViewById(R.id.detail_pressure_textview)).setText(pressure);
+            ((TextView) findViewById(R.id.detail_windSpeed_textview)).setText(windSpeed);
+            ((TextView) findViewById(R.id.detail_degrees_textview)).setText(degrees);
+            ((TextView) findViewById(R.id.detail_icon)).setText(icon);
+
 
         }
 

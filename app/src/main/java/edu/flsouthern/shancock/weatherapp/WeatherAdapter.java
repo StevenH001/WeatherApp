@@ -35,6 +35,17 @@ public class WeatherAdapter extends CursorAdapter {
     //Creates the empty basic view
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
+
+        if(cursor.getPosition() == 0) {
+            View view = LayoutInflater.from(context)
+                    .inflate(R.layout.list_item_forecast_today, parent, false);
+
+            ViewHolder viewHolder = new ViewHolder(view);
+            view.setTag(viewHolder);
+
+            return view;
+        }
+
         View view = LayoutInflater.from(context)
                 .inflate(R.layout.list_item_forecast, parent, false);
 
