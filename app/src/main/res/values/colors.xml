@@ -9,7 +9,7 @@
     <color name="red">#ff3333</color>
     <color name="dark_red">#CC0000</color>
 
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">#ff3333</color>
+    <color name="colorPrimaryDark">#CC0000</color>
     <color name="colorAccent">#FF4081</color>
 </resources>

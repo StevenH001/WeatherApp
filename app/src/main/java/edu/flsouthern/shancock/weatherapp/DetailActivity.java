@@ -19,7 +19,6 @@ public class DetailActivity extends AppCompatActivity {
 
             // Retrieve information from the intent
             String date = intent.getStringExtra("WEATHER_DATE");
-            String location = intent.getStringExtra("WEATHER_LOC_KEY");
             String shortDesc = intent.getStringExtra("WEATHER_SHORT_DESC");
             String max = intent.getStringExtra("WEATHER_MAX_TEMP");
             String min = intent.getStringExtra("WEATHER_MIN_TEMP");
@@ -27,20 +26,23 @@ public class DetailActivity extends AppCompatActivity {
             String pressure = intent.getStringExtra("WEATHER_PRESSURE");
             String windSpeed = intent.getStringExtra("WEATHER_WIND_SPEED");
             String degrees = intent.getStringExtra("WEATHER_DEGREES");
-            String icon = intent.getStringExtra("WEATHER_ID");
+
+            //Round the numbers to look nice
+            max = Math.round(Double.parseDouble(max)) + "";
+            min = Math.round(Double.parseDouble(min)) + "";
+            pressure = Math.round(Double.parseDouble(pressure)) + "";
+            windSpeed = Math.round(Double.parseDouble(windSpeed)) + "";
 
             //Load data into view
             //For now, format data based on orientation in here. Edit later to create cleaner stlye.
             ((TextView) findViewById(R.id.detail_date_textview)).setText(date);
-            ((TextView) findViewById(R.id.detail_loc_textview)).setText(location);
             ((TextView) findViewById(R.id.detail_shortDesc_textview)).setText(shortDesc);
             ((TextView) findViewById(R.id.detail_max_textview)).setText(max);
             ((TextView) findViewById(R.id.detail_min_textview)).setText(min);
-            ((TextView) findViewById(R.id.detail_humidity_textview)).setText(humidity);
-            ((TextView) findViewById(R.id.detail_pressure_textview)).setText(pressure);
-            ((TextView) findViewById(R.id.detail_windSpeed_textview)).setText(windSpeed);
-            ((TextView) findViewById(R.id.detail_degrees_textview)).setText(degrees);
-            ((TextView) findViewById(R.id.detail_icon)).setText(icon);
+            ((TextView) findViewById(R.id.detail_humidity_textview)).setText("Humidity          " + humidity + "%");
+            ((TextView) findViewById(R.id.detail_pressure_textview)).setText("Pressure          " + pressure + " hpa");
+            ((TextView) findViewById(R.id.detail_windSpeed_textview)).setText("Wind Speed     " + windSpeed + " m/s");
+            ((TextView) findViewById(R.id.detail_degrees_textview)).setText("Direction          "   + degrees + "");
 
 
         }
