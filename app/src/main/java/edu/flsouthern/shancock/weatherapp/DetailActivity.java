@@ -18,7 +18,6 @@ public class DetailActivity extends AppCompatActivity {
         if (intent != null && intent.hasExtra("WEATHER_DATE")) {
 
             // Retrieve information from the intent
-            String location = intent.getStringExtra("WEATHER_LOC_KEY");
             String date = intent.getStringExtra("WEATHER_DATE");
             String shortDesc = intent.getStringExtra("WEATHER_SHORT_DESC");
             String max = intent.getStringExtra("WEATHER_MAX_TEMP");
@@ -28,22 +27,24 @@ public class DetailActivity extends AppCompatActivity {
             String windSpeed = intent.getStringExtra("WEATHER_WIND_SPEED");
             String degrees = intent.getStringExtra("WEATHER_DEGREES");
 
-            // For now hack it all into a single string to display
-            // Later use nice layout and styling
+            //Round the numbers to look nice
+            max = Math.round(Double.parseDouble(max)) + "";
+            min = Math.round(Double.parseDouble(min)) + "";
+            pressure = Math.round(Double.parseDouble(pressure)) + "";
+            windSpeed = Math.round(Double.parseDouble(windSpeed)) + "";
 
-            String details = date + "\n\n";
-            details += "Short Description: " + shortDesc + "\n";
-            details += "Location: " + location + "\n";
-            details += "Max Temp: " + max + "\n";
-            details += "Min Temp: " + min + "\n";
-            details += "Humidity: " + humidity + "\n";
-            details += "Pressure: " + pressure + "\n";
-            details += "Wind Speed: " + windSpeed + "\n";
-            details += "Degrees: " + degrees + "\n";
+            //Load data into view
+            //For now, format data based on orientation in here. Edit later to create cleaner stlye.
+            ((TextView) findViewById(R.id.detail_date_textview)).setText(date);
+            ((TextView) findViewById(R.id.detail_shortDesc_textview)).setText(shortDesc);
+            ((TextView) findViewById(R.id.detail_max_textview)).setText(max);
+            ((TextView) findViewById(R.id.detail_min_textview)).setText(min);
+            ((TextView) findViewById(R.id.detail_humidity_textview)).setText("Humidity          " + humidity + "%");
+            ((TextView) findViewById(R.id.detail_pressure_textview)).setText("Pressure          " + pressure + " hpa");
+            ((TextView) findViewById(R.id.detail_windSpeed_textview)).setText("Wind Speed     " + windSpeed + " m/s");
+            ((TextView) findViewById(R.id.detail_degrees_textview)).setText("Direction          "   + degrees + "");
 
-            // Load data into view
-            ((TextView) findViewById(R.id.detail_text))
-                    .setText(details);
+
         }
 
 
