@@ -17,13 +17,13 @@ public class WeatherAdapter extends CursorAdapter {
 
     public static class ViewHolder {
         public final TextView dateView;
-        //public final TextView shortDescView;
+        public final TextView shortDescView;
         public final TextView highView;
         public final TextView lowView;
 
         public ViewHolder(View view) {
             dateView = (TextView) view.findViewById(R.id.list_item_date_textview);
-            //shortDescView = (TextView) view.findViewById(R.id.list_item_shortDesc_textview);
+            shortDescView = (TextView) view.findViewById(R.id.list_item_forecast_textview);
             highView = (TextView) view.findViewById(R.id.list_item_high_textview);
             lowView = (TextView) view.findViewById(R.id.list_item_low_textview);
         }
@@ -74,7 +74,7 @@ public class WeatherAdapter extends CursorAdapter {
         String low = cursor.getString(idx_weather_low);
 
         viewHolder.dateView.setText(date);
-        //viewHolder.shortDescView.setText(shortDesc);
+        viewHolder.shortDescView.setText(shortDesc);
         viewHolder.highView.setText(Math.round(Double.parseDouble(high)) + "");
         viewHolder.lowView.setText(Math.round(Double.parseDouble(low)) + "");
     }
