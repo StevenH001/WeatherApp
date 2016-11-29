@@ -114,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
                     int idx_pressure = cursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_PRESSURE);
                     int idx_wind_speed = cursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_WIND_SPEED);
                     int idx_degrees = cursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_DEGREES);
+                    int idx_weather_id = cursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_WEATHER_ID);
 
 
                     // Get data to pass to detail activity
@@ -124,8 +125,9 @@ public class MainActivity extends AppCompatActivity {
                     String min = cursor.getString(idx_min_temp);
                     String humidity = cursor.getString(idx_humidity);
                     String pressure = cursor.getString(idx_pressure);
-                    String windSpeed = cursor.getString(idx_wind_speed);
-                    String degrees = cursor.getString(idx_degrees);
+                    int windSpeed = cursor.getInt(idx_wind_speed);
+                    int degrees = cursor.getInt(idx_degrees);
+                    int weatherId = cursor.getInt(idx_weather_id);
 
 
                     Intent intent = new Intent(MainActivity.this, DetailActivity.class);
@@ -140,6 +142,7 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtra("WEATHER_PRESSURE", pressure);
                     intent.putExtra("WEATHER_WIND_SPEED", windSpeed);
                     intent.putExtra("WEATHER_DEGREES", degrees);
+                    intent.putExtra("WEATHER_ID", weatherId);
 
                     // Run activity
                     startActivity(intent);

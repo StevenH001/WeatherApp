@@ -10,12 +10,11 @@
         android:layout_width="60dp"
         android:layout_height="wrap_content">
 
-        <TextView
+        <ImageView
             android:id="@+id/list_item_icon"
             android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="IMAGE"/>
+            android:layout_width="40dp"
+            android:layout_height="40dp"/>
 
     </FrameLayout>
 

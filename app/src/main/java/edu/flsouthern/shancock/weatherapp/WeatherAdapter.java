@@ -6,6 +6,7 @@ import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import edu.flsouthern.shancock.weatherapp.Data.WeatherContract;
@@ -20,12 +21,14 @@ public class WeatherAdapter extends CursorAdapter {
         public final TextView shortDescView;
         public final TextView highView;
         public final TextView lowView;
+        public final ImageView weatherIcon;
 
         public ViewHolder(View view) {
             dateView = (TextView) view.findViewById(R.id.list_item_date_textview);
             shortDescView = (TextView) view.findViewById(R.id.list_item_forecast_textview);
             highView = (TextView) view.findViewById(R.id.list_item_high_textview);
             lowView = (TextView) view.findViewById(R.id.list_item_low_textview);
+            weatherIcon = (ImageView) view.findViewById(R.id.list_item_icon);
         }
     }
 
@@ -66,16 +69,30 @@ public class WeatherAdapter extends CursorAdapter {
         int idx_weather_shortDesc = cursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_SHORT_DESC);
         int idx_weather_high = cursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_MAX_TEMP);
         int idx_weather_low = cursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_MIN_TEMP);
+        int idx_weather_id = cursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_WEATHER_ID);
 
         // Get data to pass to detail activity
         String date = cursor.getString(idx_weather_date);
         String shortDesc = cursor.getString(idx_weather_shortDesc);
         String high = cursor.getString(idx_weather_high);
         String low = cursor.getString(idx_weather_low);
+        int weatherId = cursor.getInt(idx_weather_id);
+
+        if (cursor.getPosition() == 0)
+        {
+            //Use Art Resource
+            viewHolder.weatherIcon.setImageResource(Utility.getArtResourceForWeatherCondition(weatherId));
+
+        }
+        else{
+            //Use Icon Resource
+            viewHolder.weatherIcon.setImageResource(Utility.getIconResourceForWeatherCondition(weatherId));
+        }
 
         viewHolder.dateView.setText(date);
         viewHolder.shortDescView.setText(shortDesc);
         viewHolder.highView.setText(Math.round(Double.parseDouble(high)) + "");
         viewHolder.lowView.setText(Math.round(Double.parseDouble(low)) + "");
+
     }
 }
