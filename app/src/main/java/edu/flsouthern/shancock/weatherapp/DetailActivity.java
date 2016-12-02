@@ -36,7 +36,7 @@ public class DetailActivity extends AppCompatActivity {
             pressure = Math.round(Double.parseDouble(pressure)) + "";
 
             //Get the formatted wind speed and direction from Utility.java and set the text view
-            ((TextView) findViewById(R.id.detail_windSpeed_textview)).setText("Wind:            " + Utility.getFormattedWind(getApplicationContext(),degrees,windSpeed));
+            ((TextView) findViewById(R.id.detail_windSpeed_textview)).setText("Wind:            " + Utility.getFormattedWind(getApplicationContext(),windSpeed,degrees));
 
             //Load data into view
             //For now, format data based on orientation in here. Edit later to create cleaner stlye.
