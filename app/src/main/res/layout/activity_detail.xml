@@ -58,12 +58,10 @@
                 android:layout_gravity="center"
                 android:orientation="vertical">
 
-                <TextView
+                <ImageView
                     android:id="@+id/detail_icon"
                     android:layout_height="160dp"
                     android:layout_width="160dp"
-                    android:text="IMAGE"
-                    android:textAppearance="?android:textAppearanceLarge"
                     android:gravity="center"/>
 
                 <TextView
@@ -101,13 +99,6 @@
 
             <TextView
                 android:id="@+id/detail_windSpeed_textview"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:layout_marginTop="4dp"
-                android:textAppearance="?android:textAppearanceLarge" />
-
-            <TextView
-                android:id="@+id/detail_degrees_textview"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_marginTop="4dp"
